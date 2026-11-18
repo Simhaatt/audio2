@@ -8,11 +8,13 @@
 \setmainfont{Cambria}
 \setmonofont{Consolas}[Scale=0.86]
 \newcommand{\code}[1]{\texttt{#1}}
-\graphicspath{{../Results/plots/}}
+\graphicspath{{../Results/plots/}{figures/}}
 \setlist{itemsep=1pt,topsep=3pt}
 \captionsetup{font=small,labelfont=bf}
 \setlength{\parskip}{3pt}
 \emergencystretch=2em
+\renewcommand{\floatpagefraction}{0.85}
+\renewcommand{\topfraction}{0.85}
 
 \title{Multimodal emotion recognition on TESS:\\ the emotion is in the voice, not the words\\[3pt]\large Assignment 2b report}
 \author{Simhaa T.\,T.}
@@ -78,7 +80,27 @@ YAF $\to$ OAF & the reverse & 1,190 & 210 & 1,399 \\
 \end{tabularx}
 \end{table}
 
+Figure~\ref{fig:workflow} follows the data through the whole experiment, from the raw clips to the analyses of
+Section~\ref{sec:analysis}.
+
+\begin{figure}[!tp]\centering
+\includegraphics[width=0.86\linewidth]{fig3_experimental_workflow.png}
+\caption{The experimental workflow. Every variant trains on each of the three splits with three seeds; the
+evaluation step reports the tests of Sections~\ref{sec:exp} and~\ref{sec:analysis}.}
+\label{fig:workflow}
+\end{figure}
+
 \section{Architecture decisions}
+Figure~\ref{fig:arch} shows the multimodal model block by block; the speech-only and text-only models are its two
+branches, each with its own classifier. Table~\ref{tab:arch} lists the same blocks in detail.
+
+\begin{figure}[!tp]\centering
+\includegraphics[width=0.52\linewidth]{fig1_architecture.png}
+\caption{The multimodal model. Grey boxes are frozen pretrained encoders; the blocks below them train. The dashed
+box names the three ablations.}
+\label{fig:arch}
+\end{figure}
+
 \begin{table}[H]\centering\small
 \caption{The blocks of each pipeline. Encoders in the feature-extraction row stay frozen; everything below them
 trains (0.8--2.1\,M parameters).}
@@ -102,6 +124,14 @@ Classifier & \multicolumn{2}{l}{256 $\to$ 128 $\to$ 7, ReLU, dropout 0.3, softma
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\begin{figure}[!tp]\centering
+\includegraphics[width=0.8\linewidth]{fig2_fusion_modules.png}
+\caption{The three fusion blocks. (a) The GMU mixes the two vectors through the gate $z$. (b) Concatenation joins
+them. (c) In cross-modal attention the text tokens query the speech frames, and attention pooling summarises the
+result.}
+\label{fig:fusion}
+\end{figure}
 
 \paragraph{Preprocessing.} WavLM was trained on 16\,kHz audio, so I resample to 16\,kHz (TESS is 24.4\,kHz) rather
 than feed it a rate it never saw. Silence at the ends carries no emotion and only adds frames to pad, so I trim it.
@@ -132,7 +162,7 @@ how much of the fused vector to take from each modality: $z = \sigma(W[s;t])$,
 $h = z \odot \tanh(W_s s) + (1-z) \odot \tanh(W_t t)$. It can ignore a useless modality, and its gate $z$ shows how
 much it relies on speech. Two ablations test the choice: plain concatenation, and cross-modal attention, my
 addition, in which every text token queries the speech frames. The idea was that the text cannot tell the
-emotion but can tell the model where in the audio to listen.
+emotion but can tell the model where in the audio to listen. Figure~\ref{fig:fusion} draws all three.
 
 \paragraph{Training.} AdamW (learning rate $10^{-3}$, weight decay $10^{-2}$), batch 32, cross-entropy with label
 smoothing 0.05, at most 40 epochs, keeping the epoch with the best validation macro-F1 (patience 8; runs stopped
@@ -140,6 +170,7 @@ after 9--19 epochs). Every variant runs with seeds 0, 1 and 2, on a Kaggle T4 GP
 feature extraction, took 70 minutes.
 
 \section{Experiments: speech-only, text-only, multimodal}
+\label{sec:exp}
 \begin{table}[H]\centering\small
 \caption{Test accuracy and macro-F1 (\%), mean $\pm$ standard deviation over 3 seeds. Chance is 14.3\%.}
 \label{tab:main}
@@ -179,9 +210,11 @@ ensemble) reaches 100\% on unseen words but changes little across speakers (68.0
 \end{itemize}
 
 \section{Analysis}
+\label{sec:analysis}
 \subsection{Which emotions are easiest and hardest?}
-With a known voice every emotion is easy (recall $\geq$ 99.4\%). Across speakers the differences are large:
-\begin{table}[H]\centering\small
+With a known voice every emotion is easy (recall $\geq$ 99.4\%). Across speakers the differences are large
+(Table~\ref{tab:recall}).
+\begin{table}[!htbp]\centering\small
 \caption{Recall per emotion of the speech model (\%, mean over 3 seeds).}
 \label{tab:recall}
 \begin{tabular}{@{}lrrrrrrr@{}}
@@ -195,7 +228,7 @@ YAF $\to$ OAF & 13.3 & 95.2 & 99.7 & 12.5 & 97.0 & 7.7 & 96.5 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]\centering
+\begin{figure}[!tp]\centering
 \includegraphics[width=\linewidth]{confusion_oaf2yaf.png}\\[2pt]
 \includegraphics[width=\linewidth]{confusion_yaf2oaf.png}
 \caption{Confusion matrices of the cross-speaker tests, summed over seeds and row-normalised.}
@@ -250,7 +283,7 @@ so it is the one setting where a text branch must contribute nothing.
 layer acts as a second, sharper pooling over the speech frames (Section~\ref{sec:neg}), and that pooling copes
 better with noise.
 
-\begin{figure}[H]\centering
+\begin{figure}[!tp]\centering
 \includegraphics[width=0.62\linewidth]{noise_robustness.png}
 \caption{Accuracy on the unseen-word test set with white noise added to the speech (mean and SD over seeds).}
 \label{fig:noise}
@@ -285,7 +318,7 @@ model makes. The last two are not mistakes about single clips but about a whole 
 high confidence, which a confidence threshold could not catch.
 
 \subsection{Separability of the learned representations}
-\begin{figure}[H]\centering
+\begin{figure}[!tp]\centering
 \includegraphics[width=\linewidth]{tsne_word.png}\\[2pt]
 \includegraphics[width=\linewidth]{tsne_oaf2yaf.png}
 \caption{t-SNE of the test-set outputs of the temporal block (speech model), the contextual block (text model)
@@ -321,9 +354,9 @@ representation. I tested this on the saved test representations (\code{scripts/f
 \emph{Cluster purity} groups the new speaker's clips into 7 clusters with k-means, using no labels, and counts how
 many land in a cluster that a one-to-one match assigns to their emotion. \emph{Few-shot} trains a logistic
 regression on $k$ labelled clips per emotion of the new speaker and tests on the rest (20 random draws per $k$ and
-seed).
+seed). Table~\ref{tab:fewshot} and Figure~\ref{fig:fewshot} show the results.
 
-\begin{table}[H]\centering\small
+\begin{table}[!htbp]\centering\small
 \caption{Accuracy on the unseen speaker (\%, speech model, mean $\pm$ SD over seeds).}
 \label{tab:fewshot}
 \begin{tabular}{@{}lrrrrr@{}}
@@ -336,7 +369,7 @@ YAF $\to$ OAF & 60.2 $\pm$ 1.9 & 87.4 $\pm$ 1.5 & 78.9 $\pm$ 2.3 & 86.5 $\pm$ 1.
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]\centering
+\begin{figure}[!tp]\centering
 \includegraphics[width=0.9\linewidth]{few_shot_adaptation.png}
 \caption{Accuracy on the unseen speaker against the number of labelled clips per emotion; dotted lines show the
 cluster purity (k-means without labels, clusters named with the true labels).}
@@ -419,7 +452,7 @@ temporal pooling. Text that says nothing about the emotion gives the queries not
 shared pattern is the expected outcome. The noise robustness in Figure~\ref{fig:noise} is a side effect of that
 pooling.
 
-\begin{figure}[H]\centering
+\begin{figure}[!tp]\centering
 \includegraphics[width=0.66\linewidth]{attention_maps.png}
 \caption{Cross-modal attention of six test clips of the word ``bought'' (OAF, seed 0): rows are text tokens,
 columns 20\,ms speech frames. All tokens attend to the same few frames.}

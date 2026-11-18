@@ -9,11 +9,13 @@
 \setmonofont{Consolas}[Scale=0.86]
 \newfontfamily\ipa{Segoe UI}
 \newcommand{\code}[1]{\texttt{#1}}
-\graphicspath{{../outputs/figures/}}
+\graphicspath{{../outputs/figures/}{figures/}}
 \setlist{itemsep=1pt,topsep=3pt}
 \captionsetup{font=small,labelfont=bf}
 \setlength{\parskip}{3pt}
 \emergencystretch=2em
+\renewcommand{\floatpagefraction}{0.85}
+\renewcommand{\topfraction}{0.85}
 
 \title{Forced alignment with the Montreal Forced Aligner,\\ and the aligner as a pronunciation checker\\[3pt]\large Assignment 2a report}
 \author{Simhaa T.\,T.}
@@ -44,6 +46,15 @@ the acoustic model choose between each word's own vowel and its partner's. It ch
 same way: this speaker's ``bad'' lies between /æ/ and /ɛ/.
 
 \section{Data and preparation}
+Figure~\ref{fig:pipeline} shows the five steps of the pipeline, from the provided files to the analysis.
+
+\begin{figure}[!tbp]\centering
+\includegraphics[width=0.86\linewidth]{fig1_pipeline.png}
+\caption{The pipeline. The script converts the audio and cleans the transcripts, generates pronunciations for
+unknown words (OOV, out of vocabulary), aligns every file in four setups and analyses the TextGrids.}
+\label{fig:pipeline}
+\end{figure}
+
 \begin{table}[H]\centering\small
 \caption{The provided recordings (16\,kHz, mono).}
 \label{tab:data}
@@ -96,7 +107,15 @@ words missing from the given dictionary. The ARPAbet dictionary lacks four: \emp
 \emph{Melnicove} and \emph{politicize} (MFA splits \emph{de-politicize} at the hyphen, and \emph{de} is known). The
 MFA dictionary also lacks \emph{Margo} and \emph{judgeships}. For uncertain names G2P returns several variants,
 five for \emph{Dukakis}, and the aligner picks the one that fits the audio best: \code{D UW1 K AA1 K IH0 S}
-with ARPAbet, and the reduced {\ipa d ɐ k ə c ɪ s} with the MFA phone set.
+with ARPAbet, and the reduced {\ipa d ɐ k ə c ɪ s} with the MFA phone set. Figure~\ref{fig:setups} shows how the
+models and dictionaries combine into the four setups.
+
+\begin{figure}[!tbp]\centering
+\includegraphics[width=0.92\linewidth]{fig2_setups_agreement.png}
+\caption{How the four setups (A--D) arise from two acoustic models and three dictionaries, and how often their
+word boundaries agree within 20\,ms (Table~\ref{tab:agree}). Setup B serves as the reference for the others.}
+\label{fig:setups}
+\end{figure}
 
 \section{Results}
 \begin{table}[H]\centering\small
@@ -131,7 +150,7 @@ Setups compared & Median diff. & Within 20\,ms & Within 50\,ms & Largest \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]\centering
+\begin{figure}[!tbp]\centering
 \includegraphics[width=\linewidth]{compare/ISLE_SESS0131_BLOCKD02_03_sprt1.png}
 \caption{``I said BAD not BED'': waveform, spectrogram (Praat, 0--5\,kHz) and the phone tier of each setup.
 \code{english\_us\_arpa} ends ``bed'' at the release of the /d/ (2.04\,s); \code{english\_mfa} stretches the /d/
@@ -140,7 +159,7 @@ a flap [ɾ] to the new end.}
 \label{fig:bed}
 \end{figure}
 
-\begin{figure}[H]\centering
+\begin{figure}[!tbp]\centering
 \includegraphics[width=\linewidth]{compare/F2BJRLP2.png}
 \caption{News clip F2BJRLP2, 2.4--5.9\,s. With the pretrained dictionary, ``Dukakis'' and ``politicize'' are
 unknown and get one \code{spn} interval each; with the G2P dictionary both models give them full phone
@@ -230,6 +249,14 @@ the audio better. Goodness-of-pronunciation scores rest on the same comparison; 
 likelihoods.
 \end{itemize}
 
+\begin{figure}[!tbp]\centering
+\includegraphics[width=0.92\linewidth]{fig3_pronunciation_check.png}
+\caption{The pronunciation check. (a) Free choice: the aligner picks one of two pronunciations. (b) Likelihood
+ratio: three alignments of each clip, with the intended vowels and with each target word's vowel swapped. (c) The
+LLR of each target word; only ``bad'' scores above zero.}
+\label{fig:pron}
+\end{figure}
+
 \begin{table}[H]\centering\small
 \caption{Pronunciation check of the six target words.}
 \label{tab:pron}
@@ -247,7 +274,7 @@ bed & \code{B EH1 D} & \code{B EH1 D} (intended) & $-$123 \\
 \end{tabular}
 \end{table}
 
-Both tests single out the same word. Given the choice, the aligner hears ``bad'' as \code{B EH1 D}, and ``bad'' is
+Both tests single out the same word (Figure~\ref{fig:pron}c). Given the choice, the aligner hears ``bad'' as \code{B EH1 D}, and ``bad'' is
 the only word whose partner vowel fits better (LLR +39). The other five words prefer their own vowel, ``white''
 most strongly ($-$567). The formants of Table~\ref{tab:pairs} point the same way: the F1 of ``bad'' (594\,Hz) lies
 between the native /æ/ and /ɛ/ averages. Two independent measurements therefore agree that this speaker's ``bad''
