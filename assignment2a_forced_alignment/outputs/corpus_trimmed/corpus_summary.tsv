@@ -1,0 +1,7 @@
+utterance	speaker	audio	rate	seconds	words
+F2BJRLP1	bu_f2b	NIST SPHERE -> RIFF, trailing silence trimmed (25 dB)	16000	25.13	73
+F2BJRLP2	bu_f2b	NIST SPHERE -> RIFF, trailing silence trimmed (25 dB)	16000	28.59	73
+F2BJRLP3	bu_f2b	NIST SPHERE -> RIFF, trailing silence trimmed (25 dB)	16000	30.46	82
+ISLE_SESS0131_BLOCKD02_01_sprt1	isle_sess0131	RIFF (copied), trailing silence trimmed (25 dB)	16000	2.4	5
+ISLE_SESS0131_BLOCKD02_02_sprt1	isle_sess0131	RIFF (copied), trailing silence trimmed (25 dB)	16000	2.33	5
+ISLE_SESS0131_BLOCKD02_03_sprt1	isle_sess0131	RIFF (copied), trailing silence trimmed (25 dB)	16000	2.18	5

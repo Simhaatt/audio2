@@ -1,0 +1,8 @@
+| Variant | unseen words: accuracy | macro-F1 | OAF -> YAF: accuracy | macro-F1 | YAF -> OAF: accuracy | macro-F1 |
+|---|---|---|---|---|---|---|
+| speech_logmel | – | – | 32.2 ± 4.3 | 28.0 ± 4.8 | 35.9 ± 1.4 | 26.3 ± 1.9 |
+| speech_mean | – | – | 61.7 ± 12.1 | 57.8 ± 12.3 | 58.2 ± 3.0 | 49.8 ± 4.7 |
+| speech_mean_aug | – | – | 62.4 ± 2.8 | 56.9 ± 3.1 | 61.5 ± 3.3 | 58.1 ± 4.1 |
+| speech_logmel_aug | – | – | 52.5 ± 3.6 | 46.5 ± 3.6 | 41.2 ± 2.9 | 34.9 ± 4.5 |
+
+Mean ± standard deviation over 3 seeds, in %. Chance level is 14.3 % (7 balanced classes).

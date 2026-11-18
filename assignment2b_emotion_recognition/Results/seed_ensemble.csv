@@ -1,0 +1,13 @@
+variant,split,single_seed_mean,three_seed_ensemble
+speech,word,0.9984,1.0
+speech,oaf2yaf,0.654,0.68
+speech,yaf2oaf,0.6023,0.5947
+speech_logmel,word,0.9944,0.9952
+speech_logmel,oaf2yaf,0.3219,0.3457
+speech_logmel,yaf2oaf,0.3588,0.376
+fusion,word,0.9913,1.0
+fusion,oaf2yaf,0.595,0.6793
+fusion,yaf2oaf,0.5702,0.5997
+fusion_xattn,word,0.9952,1.0
+fusion_xattn,oaf2yaf,0.5214,0.5257
+fusion_xattn,yaf2oaf,0.5208,0.5368

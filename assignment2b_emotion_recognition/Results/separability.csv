@@ -1,0 +1,10 @@
+split,model,block,silhouette_mean,silhouette_std
+word,speech,temporal,0.938,0.025
+word,text,contextual,-0.017,0.0
+word,fusion,fusion,0.958,0.002
+oaf2yaf,speech,temporal,0.644,0.048
+oaf2yaf,text,contextual,-0.005,0.0
+oaf2yaf,fusion,fusion,0.544,0.08
+yaf2oaf,speech,temporal,0.483,0.01
+yaf2oaf,text,contextual,-0.005,0.0
+yaf2oaf,fusion,fusion,0.439,0.027

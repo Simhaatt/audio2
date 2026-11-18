@@ -1,0 +1,10 @@
+variant,split,both_intact,speech_shuffled,text_shuffled
+fusion,word,99.1 ± 0.1,12.5 ± 0.1,99.1 ± 0.1
+fusion,oaf2yaf,59.5 ± 11.2,13.0 ± 0.7,59.5 ± 11.2
+fusion,yaf2oaf,57.0 ± 2.7,14.4 ± 0.5,57.0 ± 2.7
+fusion_concat,word,99.8 ± 0.1,12.7 ± 0.1,99.8 ± 0.1
+fusion_concat,oaf2yaf,57.6 ± 11.1,13.4 ± 0.8,57.6 ± 11.1
+fusion_concat,yaf2oaf,45.9 ± 8.1,14.7 ± 0.1,45.9 ± 8.1
+fusion_xattn,word,99.5 ± 0.2,12.7 ± 0.1,99.5 ± 0.2
+fusion_xattn,oaf2yaf,52.1 ± 12.4,13.5 ± 0.7,52.1 ± 12.4
+fusion_xattn,yaf2oaf,52.1 ± 1.7,14.6 ± 0.5,52.1 ± 1.7

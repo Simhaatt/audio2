@@ -1,0 +1,98 @@
+{
+ "YAF_back_angry": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "back",
+  "[SEP]"
+ ],
+ "YAF_back_disgust": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "back",
+  "[SEP]"
+ ],
+ "YAF_back_fear": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "back",
+  "[SEP]"
+ ],
+ "YAF_back_happy": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "back",
+  "[SEP]"
+ ],
+ "YAF_back_neutral": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "back",
+  "[SEP]"
+ ],
+ "YAF_back_ps": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "back",
+  "[SEP]"
+ ],
+ "YAF_back_sad": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "back",
+  "[SEP]"
+ ],
+ "YAF_bar_angry": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bar",
+  "[SEP]"
+ ],
+ "YAF_bar_disgust": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bar",
+  "[SEP]"
+ ],
+ "YAF_bar_fear": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bar",
+  "[SEP]"
+ ],
+ "YAF_bar_happy": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bar",
+  "[SEP]"
+ ],
+ "YAF_bar_neutral": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bar",
+  "[SEP]"
+ ]
+}

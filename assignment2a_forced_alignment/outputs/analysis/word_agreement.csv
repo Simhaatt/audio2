@@ -1,0 +1,7 @@
+setup_a,setup_b,words,median_abs_diff_ms,mean_abs_diff_ms,within_20ms_pct,within_50ms_pct,largest_ms,largest_word
+english_mfa,english_mfa_trimmed,244,0.0,8.9,98.6,99.0,2320,"bed (ISLE_SESS0131_BLOCKD02_03_sprt1, end)"
+english_mfa,english_us_arpa,244,10.0,18.3,90.2,96.3,2460,"bed (ISLE_SESS0131_BLOCKD02_03_sprt1, end)"
+english_mfa,english_us_arpa_pretrained_dict,244,10.0,18.6,89.8,96.3,2460,"bed (ISLE_SESS0131_BLOCKD02_03_sprt1, end)"
+english_mfa_trimmed,english_us_arpa,244,10.0,10.1,89.3,96.1,250,"he (F2BJRLP2, start)"
+english_mfa_trimmed,english_us_arpa_pretrained_dict,244,10.0,10.4,88.9,96.1,250,"he (F2BJRLP2, start)"
+english_us_arpa,english_us_arpa_pretrained_dict,244,0.0,0.6,99.2,100.0,20,"thomas (F2BJRLP2, end)"

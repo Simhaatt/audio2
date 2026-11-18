@@ -1,0 +1,7 @@
+features/
+__pycache__/
+*.pyc
+report/*.aux
+report/*.log
+report/*.out
+Results/runs/*/*/*/reps.npz.tmp

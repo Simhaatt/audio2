@@ -1,0 +1,9 @@
+variant,split,single_seed_mean,three_seed_ensemble
+speech_logmel,oaf2yaf,0.3219,0.3457
+speech_logmel,yaf2oaf,0.3588,0.376
+speech_mean,oaf2yaf,0.6169,0.7079
+speech_mean,yaf2oaf,0.5821,0.5804
+speech_mean_aug,oaf2yaf,0.624,0.6679
+speech_mean_aug,yaf2oaf,0.6147,0.6848
+speech_logmel_aug,oaf2yaf,0.5245,0.5507
+speech_logmel_aug,yaf2oaf,0.4124,0.4432

@@ -1,0 +1,68 @@
+{
+ "clips": 2799,
+ "sentences": 200,
+ "upper_bound_any_text_model": 0.1429081814933905,
+ "zero_shot_model": "j-hartmann/emotion-english-distilroberta-base",
+ "zero_shot_accuracy": 0.1429081814933905,
+ "zero_shot_predicted_label_share": {
+  "angry": 0.04,
+  "disgust": 0.055,
+  "fear": 0.015,
+  "happy": 0.0,
+  "neutral": 0.875,
+  "ps": 0.0,
+  "sad": 0.015
+ },
+ "most_confident_non_neutral": [
+  [
+   "Say the word nag.",
+   "disgust",
+   0.958
+  ],
+  [
+   "Say the word wag.",
+   "disgust",
+   0.946
+  ],
+  [
+   "Say the word shawl.",
+   "disgust",
+   0.899
+  ],
+  [
+   "Say the word perch.",
+   "disgust",
+   0.859
+  ],
+  [
+   "Say the word sour.",
+   "disgust",
+   0.852
+  ],
+  [
+   "Say the word keg.",
+   "disgust",
+   0.835
+  ],
+  [
+   "Say the word burn.",
+   "angry",
+   0.794
+  ],
+  [
+   "Say the word kick.",
+   "angry",
+   0.779
+  ],
+  [
+   "Say the word kill.",
+   "angry",
+   0.768
+  ],
+  [
+   "Say the word fat.",
+   "disgust",
+   0.733
+  ]
+ ]
+}

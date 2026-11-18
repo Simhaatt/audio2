@@ -1,0 +1,5 @@
+setup,utterances,words,words_as_spn,phones,phone_ms_median,phones_30ms_or_less,pauses_100ms_plus,pause_s_total
+english_mfa,6,244,0,1045,70.0,96,19,6.29
+english_mfa_trimmed,6,244,0,1045,70.0,98,19,6.29
+english_us_arpa,6,244,0,1063,70.0,82,22,6.99
+english_us_arpa_pretrained_dict,6,244,5,1028,70.0,78,22,7.0

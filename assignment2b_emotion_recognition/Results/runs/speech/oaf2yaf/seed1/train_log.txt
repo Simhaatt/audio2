@@ -1,0 +1,13 @@
+speech | split oaf2yaf | seed 1 | train 1189 val 210 | 1.05 M trainable parameters | cuda
+epoch  1 train loss 1.2568 | val loss 0.4736 acc 0.9667 f1 0.9666
+epoch  2 train loss 0.3946 | val loss 0.2917 acc 0.9952 f1 0.9952
+epoch  3 train loss 0.3260 | val loss 0.3475 acc 0.9619 f1 0.9617
+epoch  4 train loss 0.2927 | val loss 0.2660 acc 1.0000 f1 1.0000
+epoch  5 train loss 0.2743 | val loss 0.4159 acc 0.9381 f1 0.9343
+epoch  6 train loss 0.2933 | val loss 0.2808 acc 0.9905 f1 0.9905
+epoch  7 train loss 0.2845 | val loss 0.2655 acc 0.9952 f1 0.9952
+epoch  8 train loss 0.2732 | val loss 0.2586 acc 1.0000 f1 1.0000
+epoch  9 train loss 0.2709 | val loss 0.2603 acc 0.9952 f1 0.9952
+epoch 10 train loss 0.2946 | val loss 0.2680 acc 0.9952 f1 0.9952
+epoch 11 train loss 0.2764 | val loss 0.2768 acc 0.9857 f1 0.9857
+epoch 12 train loss 0.2725 | val loss 0.2562 acc 1.0000 f1 1.0000

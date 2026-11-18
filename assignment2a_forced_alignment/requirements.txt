@@ -1,0 +1,8 @@
+# Montreal Forced Aligner itself comes from conda-forge (see README):
+#   conda create -n mfa -c conda-forge montreal-forced-aligner=3.4.3
+# Python packages for the figures and analysis:
+numpy>=1.24
+scipy>=1.10
+matplotlib>=3.7
+praatio>=6.0
+praat-parselmouth>=0.4.3

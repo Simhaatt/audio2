@@ -1,0 +1,21 @@
+speech | split word | seed 2 | train 1959 val 420 | 0.87 M trainable parameters | cuda
+epoch  1 train loss 1.1632 | val loss 0.4989 acc 0.9119 f1 0.9102
+epoch  2 train loss 0.4047 | val loss 0.3726 acc 0.9667 f1 0.9667
+epoch  3 train loss 0.3206 | val loss 0.3086 acc 0.9833 f1 0.9834
+epoch  4 train loss 0.2903 | val loss 0.3013 acc 0.9833 f1 0.9833
+epoch  5 train loss 0.2816 | val loss 0.2843 acc 0.9881 f1 0.9881
+epoch  6 train loss 0.2706 | val loss 0.2757 acc 0.9929 f1 0.9928
+epoch  7 train loss 0.2676 | val loss 0.2741 acc 0.9929 f1 0.9928
+epoch  8 train loss 0.2661 | val loss 0.2746 acc 0.9929 f1 0.9928
+epoch  9 train loss 0.2657 | val loss 0.2754 acc 0.9929 f1 0.9928
+epoch 10 train loss 0.2653 | val loss 0.2754 acc 0.9905 f1 0.9905
+epoch 11 train loss 0.2659 | val loss 0.2745 acc 0.9929 f1 0.9928
+epoch 12 train loss 0.2651 | val loss 0.2703 acc 0.9952 f1 0.9952
+epoch 13 train loss 0.2647 | val loss 0.2742 acc 0.9952 f1 0.9952
+epoch 14 train loss 0.2639 | val loss 0.2727 acc 0.9952 f1 0.9952
+epoch 15 train loss 0.2646 | val loss 0.2752 acc 0.9929 f1 0.9928
+epoch 16 train loss 0.2649 | val loss 0.2748 acc 0.9952 f1 0.9952
+epoch 17 train loss 0.2636 | val loss 0.2765 acc 0.9929 f1 0.9928
+epoch 18 train loss 0.2632 | val loss 0.2761 acc 0.9929 f1 0.9928
+epoch 19 train loss 0.2634 | val loss 0.2761 acc 0.9929 f1 0.9928
+epoch 20 train loss 0.2628 | val loss 0.2769 acc 0.9929 f1 0.9928

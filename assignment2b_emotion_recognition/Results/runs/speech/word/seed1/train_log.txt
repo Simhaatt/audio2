@@ -1,0 +1,13 @@
+speech | split word | seed 1 | train 1959 val 420 | 1.05 M trainable parameters | cuda
+epoch  1 train loss 0.9716 | val loss 0.3261 acc 0.9786 f1 0.9785
+epoch  2 train loss 0.3092 | val loss 0.2650 acc 0.9976 f1 0.9976
+epoch  3 train loss 0.2922 | val loss 0.2984 acc 0.9905 f1 0.9905
+epoch  4 train loss 0.2790 | val loss 0.2582 acc 1.0000 f1 1.0000
+epoch  5 train loss 0.2676 | val loss 0.2609 acc 0.9976 f1 0.9976
+epoch  6 train loss 0.2663 | val loss 0.2579 acc 0.9976 f1 0.9976
+epoch  7 train loss 0.2652 | val loss 0.2585 acc 0.9976 f1 0.9976
+epoch  8 train loss 0.2650 | val loss 0.2577 acc 0.9976 f1 0.9976
+epoch  9 train loss 0.2653 | val loss 0.2581 acc 0.9976 f1 0.9976
+epoch 10 train loss 0.2647 | val loss 0.2586 acc 0.9976 f1 0.9976
+epoch 11 train loss 0.2646 | val loss 0.2589 acc 0.9976 f1 0.9976
+epoch 12 train loss 0.2648 | val loss 0.2577 acc 0.9976 f1 0.9976

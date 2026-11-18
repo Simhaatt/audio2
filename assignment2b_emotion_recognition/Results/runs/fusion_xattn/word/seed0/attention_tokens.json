@@ -1,0 +1,98 @@
+{
+ "OAF_bought_angry": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bought",
+  "[SEP]"
+ ],
+ "OAF_bought_disgust": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bought",
+  "[SEP]"
+ ],
+ "OAF_bought_fear": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bought",
+  "[SEP]"
+ ],
+ "OAF_bought_happy": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bought",
+  "[SEP]"
+ ],
+ "OAF_bought_neutral": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bought",
+  "[SEP]"
+ ],
+ "OAF_bought_ps": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bought",
+  "[SEP]"
+ ],
+ "OAF_bought_sad": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "bought",
+  "[SEP]"
+ ],
+ "OAF_chalk_angry": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "chalk",
+  "[SEP]"
+ ],
+ "OAF_chalk_disgust": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "chalk",
+  "[SEP]"
+ ],
+ "OAF_chalk_fear": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "chalk",
+  "[SEP]"
+ ],
+ "OAF_chalk_happy": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "chalk",
+  "[SEP]"
+ ],
+ "OAF_chalk_neutral": [
+  "[CLS]",
+  "say",
+  "the",
+  "word",
+  "chalk",
+  "[SEP]"
+ ]
+}
