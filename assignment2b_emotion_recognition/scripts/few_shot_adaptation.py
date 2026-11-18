@@ -3,9 +3,9 @@
 The cross-speaker test clips of the new speaker form tight clusters in the speech model's temporal block, yet many
 are classified wrongly. This script measures, on the saved test representations (reps.npz, no GPU needed):
 
-  cluster purity   k-means with 7 clusters on the new speaker's vectors, each cluster named by its majority
-                   emotion: how well the vectors separate the emotions with no labels at all (an upper bound for
-                   any relabelling of the clusters)
+  cluster purity   k-means with 7 clusters on the new speaker's vectors (no labels), each cluster then named with
+                   the true labels by the best one-to-one match: how well the vectors separate the emotions, an
+                   upper bound for any relabelling of the clusters
   few-shot         a logistic-regression classifier trained on k labelled clips per emotion of the new speaker
                    (k = 1, 2, 5, 10), tested on the rest of that speaker's clips; 20 random draws per k and seed
   zero-label       the same clusters, each named by the model's own predicted probabilities with one emotion per
@@ -128,7 +128,8 @@ def main():
         ax.set_title(title, fontsize=10)
     axes[0].set_ylabel("accuracy on the new speaker (%)")
     axes[-1].legend(fontsize=8, loc="lower right")
-    fig.suptitle("Adapting to an unseen speaker (dotted: k-means cluster purity, no labels)", fontsize=10)
+    fig.suptitle("Adapting to an unseen speaker (dotted: cluster purity, k-means without labels, oracle naming)",
+                 fontsize=10)
     fig.tight_layout()
     fig.savefig(os.path.join(a.results, "plots", "few_shot_adaptation.png"), dpi=140)
     print("->", os.path.join(a.results, "few_shot_adaptation.csv"))

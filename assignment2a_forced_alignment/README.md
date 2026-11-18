@@ -34,7 +34,7 @@ aligner is also used as a pronunciation checker for the non-native minimal pairs
 - **The aligner as a pronunciation checker:** plain alignment labels the non-native speaker's "bad" and "bed" /æ/
   and /ɛ/ because the dictionary says so. Offered both vowels for every target word, the aligner chose the vowel of
   "bed" for "bad", and "bad" is the only word of six whose partner vowel fits the audio better (log-likelihood
-  ratio +39). The formants agree: the "bad" and "bed" vowels differ by only 60 Hz in F1.
+  ratio +39). The formants point the same way: the F1 of "bad" lies between the native /æ/ and /ɛ/ averages.
 
 | Word | Intended | Aligner's free choice | LLR, partner − intended |
 |---|---|---|---|

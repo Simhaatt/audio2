@@ -27,13 +27,15 @@ Test accuracy (%), mean ± SD over 3 seeds (chance 14.3 %):
 - **Known voice: easy; new voice: hard.** 99.8 % on unseen words, 60–65 % on an unseen speaker. Fear, neutral and
   sad transfer to a new voice (96–100 % recall); angry, happy and surprise do not (8–57 %).
 - **A new voice needs only a few labels.** The speech model's representations already separate the unseen speaker's
-  emotions (96 % k-means cluster purity for YAF, no labels). One labelled clip per emotion of the new speaker raises
+  emotions: k-means (no labels) groups them so that the best naming of the clusters puts 96 % of YAF's clips in their
+  own emotion (a ceiling, since the naming uses the true labels). One labelled clip per emotion of the new speaker raises
   accuracy from 65 % to 92 % (YAF) and from 60 % to 79 % (OAF); five per emotion reach 98 % and 92 %.
 - **Noise:** at 0 dB SNR the cross-modal attention model keeps 70.6 % against 50.3 % for speech alone, but its text is
   shuffle-proof, so the gain comes from its extra attention pooling over the speech frames, not from the words.
 - **Speaker augmentation** (training voice pitch-shifted ±3 semitones and sped up/slowed 0.9×/1.1×) adds 20 points
-  to log-mel features from OAF to YAF (32.2 → 52.5 %) but little to WavLM (61.7 → 62.4 % and 58.2 → 61.5 %), which
-  already generalises across voices; on WavLM it mainly makes training stable (seed spread ±12.1 → ±2.8). Results in
+  to log-mel features from OAF to YAF (32.2 → 52.5 %) and 5 the other way, but little to WavLM (61.7 → 62.4 % and
+  58.2 → 61.5 %), which already transfers far better across voices; from OAF to YAF it narrows the seed spread
+  (±12.1 → ±2.8). Results in
   [`Results_aug/`](Results_aug), notebook `kaggle/TESS_augmentation.ipynb`.
 - **Two additions did not work:** per-speaker normalisation lowered cross-speaker accuracy by 9 points, and
   cross-modal attention learned one shared temporal pooling instead of a word-to-audio alignment.

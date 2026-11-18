@@ -14,7 +14,7 @@
 \setlength{\parskip}{3pt}
 \emergencystretch=2em
 
-\title{Multimodal emotion recognition on TESS:\\ speech, text and fusion\\[3pt]\large Assignment 2b report}
+\title{Multimodal emotion recognition on TESS:\\ the emotion is in the voice, not the words\\[3pt]\large Assignment 2b report}
 \author{Simhaa T.\,T.}
 \date{November 2026}
 
@@ -24,28 +24,34 @@
 \section{Summary}
 I built three emotion classifiers for the Toronto emotional speech set (TESS): one that hears the speech, one that
 reads the transcript, and one that fuses both. Each follows the assignment's blocks: preprocessing, feature
-extraction, temporal or contextual modelling, fusion and a classifier. Frozen pretrained encoders (WavLM Base+ for
-speech, BERT for text) extract the features, and small trained heads do the rest.
+extraction, temporal or contextual modelling and a classifier, with a fusion block in the multimodal model. Frozen
+pretrained encoders (WavLM Base+ for speech, BERT for text) extract the features, and small trained heads do the
+rest.
 
 The dataset decides most of the story. Every TESS clip says ``Say the word \emph{X}'', and each sentence occurs
-once in every emotion, so \textbf{the text carries no information about the emotion}. I proved this three ways: no
-text-only classifier can beat 1/7 (14.3\%) on TESS, a pretrained text-emotion model scores exactly that, and our
-text model does too. The fusion models therefore lean entirely on speech: replacing their speech with another
-clip's drops them to chance, while replacing their text changes nothing.
+once in every emotion, so \textbf{the text says nothing about the emotion}. A short counting argument proves it: no
+text-only classifier can beat 1/7 (14.3\%) on TESS. A pretrained text-emotion model and our own text model both land
+exactly there. The fusion models therefore lean entirely on speech: replacing their speech with another clip's
+drops them to chance, while replacing their text changes nothing.
 
 On sentences never seen in training, speech alone recognises 99.8\% of clips. On an unseen \emph{speaker}, accuracy
-falls to 60--65\%. The learned representations still separate the new speaker's emotions into clean clusters
-(96\% cluster purity for YAF), but the classifier names some clusters wrongly; a single labelled clip per emotion
-from the new speaker lifts accuracy from 65\% to 92\%. Speaker augmentation (pitch and speed changes of the training
-voice) adds 20 points to log-mel features but little to WavLM, which already generalises across voices; there it
-mainly makes training stable. Two of my additions did not work as intended and I report them as found: per-speaker feature normalisation lowered cross-speaker accuracy, and cross-modal attention learned
-a sharp pooling over time rather than a word-to-audio alignment, although that made it the most noise-robust model.
+falls to 60--65\%. Yet the model's internal vectors still group the new speaker's clips by emotion: k-means finds
+seven clusters, and with the best naming of those clusters 96\% of YAF's clips land in their own emotion. The
+classifier just names some clusters wrongly. A single labelled clip per emotion from the new speaker lifts accuracy
+from 65\% to 92\%.
+
+Speaker augmentation (pitch and speed changes of the training voice) adds 20 and 5 points to log-mel features in
+the two directions, but little to WavLM, which already transfers far better across voices (60--65\% against
+32--36\%). Two of my additions did not work as intended. Per-speaker feature normalisation lowered cross-speaker
+accuracy. Cross-modal attention learned a sharp pooling over time rather than a word-to-audio alignment, although
+that made it the most noise-robust model.
 
 \section{Data, and why the text cannot help}
 TESS holds recordings of two actresses, OAF (aged 64) and YAF (aged 26), each saying ``Say the word \emph{X}'' for
-200 target words in seven emotions: angry, disgust, fear, happy, neutral, pleasant surprise (``ps'') and sad. That
-gives 2,800 clips. The Kaggle copy stores the dataset twice in nested folders, so the loader removes duplicates by
-file name; one file is misnamed (\code{OA\_bite\_neutral.wav}) and was skipped, leaving 2,799 clips. The labels come
+200 target words in seven emotions: angry, disgust, fear, happy, neutral, pleasant surprise (``ps'') and sad. Two
+speakers, 200 words and seven emotions make 2,800 clips. The Kaggle copy stores the dataset twice in nested
+folders, so the loader removes duplicates by file name. It also skipped one misnamed file
+(\code{OA\_bite\_neutral.wav}), which leaves 2,799 clips. The labels come
 from the file names, and the transcript is the carrier sentence with the target word.
 
 \paragraph{An upper bound for every text model.} A text classifier sees only the sentence, so it must give every
@@ -55,7 +61,7 @@ $\sum_{\text{sentences}} \max_{\text{emotion}} n / N = 14.3\%$ (computed from th
 \code{Results/text\_zero\_shot.json}). A model that beats this is reading something other than the text, such as a
 leak through the file order or the split.
 
-\paragraph{Splits.} The splits are built so that results cannot come from memorising sentences or voices.
+\paragraph{Splits.} I built the splits so that no result can come from memorising sentences or voices.
 \begin{table}[H]\centering\small
 \caption{Data splits. All seven emotions stay balanced in every part.}
 \label{tab:splits}
@@ -104,10 +110,10 @@ do carry emotion. For text, BERT's own tokeniser is the right preprocessing beca
 
 \paragraph{Speech features: WavLM Base+.} Emotion lives in how something is said: pitch, energy, tempo, voice
 quality. Self-supervised speech models learn these cues without labels, and WavLM Base+ leads the emotion task
-of the SUPERB benchmark among base-size models. Its layers hold different information (acoustic near the bottom,
+of the SUPERB benchmark among base-size models. Its layers capture different things (acoustic near the bottom,
 phonetic higher up), so rather than pick one, the model learns a weighted sum of all 13. The learned weights stay
-close to uniform with a slight lean to the lower layers (0.083 for layer 0 down to 0.071 for layer 10), which fits
-emotion being an acoustic rather than a phonetic property. A 64-band log-mel spectrogram, the classic hand-made
+close to uniform (0.071--0.083 against 0.077 for equal weights): no single layer carries the emotion. A 64-band
+log-mel spectrogram, the classic hand-made
 feature, serves as the ablation.
 
 \paragraph{Temporal modelling: BiLSTM with attention pooling.} Emotion unfolds over the clip, for example a rising
@@ -159,14 +165,17 @@ Fusion, cross-attention & 99.5 $\pm$ 0.2 & 99.5 & 52.1 $\pm$ 12.4 & 50.0 & 52.1 
 1,260 test predictions (3 seeds $\times$ 420). The task becomes hard only for a new voice: 65\% and 60\%.
 \item \textbf{Text sits exactly at the bound.} 14.3\% in every split, and macro-F1 3.6\% because each seed's model
 settles on one constant answer. A pretrained text-emotion classifier
-(\code{j-hartmann/}\allowbreak\code{emotion-english-distilroberta-base}) also scores exactly 14.3\%: it calls 87.5\% of the sentences
-neutral and the rest mostly disgust or anger (``Say the word \emph{nag}'' 0.96 disgust), judging the target word's
-meaning, which has nothing to do with how the actress spoke it.
+(\code{j-hartmann/}\allowbreak\code{emotion-english-distilroberta-base}) also scores exactly 14.3\%. It calls 87.5\%
+of the sentences neutral and the rest mostly disgust or anger (``Say the word \emph{nag}'': 0.96 disgust). It judges
+the target word's meaning, which has nothing to do with how the actress spoke it.
 \item \textbf{Fusion never beats speech.} On unseen words all fusion models stay within a point of speech; across
-speakers they lose 3--14 points. The text branch adds parameters and noise but no information.
+speakers they lose 3--14 points. The text branch adds parameters and noise but nothing about the emotion.
 \item \textbf{The pretrained features matter most for new voices.} Log-mel features reach 99.4\% on known voices
-but only 32--36\% across speakers, half the WavLM result: self-supervised pretraining on thousands of speakers is
-what lets the model generalise to a voice it never heard.
+but only 32--36\% across speakers, half the WavLM result. Self-supervised pretraining on thousands of speakers lets
+the model transfer far better to a voice it never heard, though still far from the 99.8\% of a known voice.
+\item \textbf{Averaging seeds helps known voices only.} Averaging the three seeds' predicted probabilities (an
+ensemble) reaches 100\% on unseen words but changes little across speakers (68.0\% and 59.5\%;
+\code{Results/seed\_ensemble.csv}).
 \end{itemize}
 
 \section{Analysis}
@@ -196,12 +205,14 @@ YAF $\to$ OAF & 13.3 & 95.2 & 99.7 & 12.5 & 97.0 & 7.7 & 96.5 \\
 \textbf{Easiest: fear, neutral and sad} transfer to the other speaker almost perfectly (96--100\%). These are
 likely the emotions whose delivery both actresses share most: in the usual description of emotional speech,
 neutral is flat, sad slow, low and quiet, and fear high and tense. \textbf{Hardest: angry, happy and pleasant
-surprise}, at 8--57\%. All three are high-arousal emotions, typically loud, fast and high-pitched, so they differ
-mainly in voice quality and the shape of the pitch contour, which individual speakers realise differently. The errors are
-systematic rather than random (Figure~\ref{fig:conf}). Trained on OAF, the model hears 66\% of YAF's happy clips as
-angry; trained on YAF, it hears 71\% of OAF's angry clips as fear and three quarters of OAF's happy and surprised
-clips as disgust. A whole emotion of the new speaker lands on one wrong category, usually with high confidence
-(median 0.85 for YAF happy $\to$ angry). Section~\ref{sec:fewshot} shows what this means.
+surprise}, at 8--57\%. All three are high-arousal emotions, that is, spoken with high energy: typically loud, fast
+and high-pitched. They therefore differ mainly in voice quality and the shape of the pitch contour, which
+individual speakers realise differently. The errors are systematic rather than random (Figure~\ref{fig:conf}).
+Trained on OAF, the model hears 66\% of YAF's happy clips as angry; trained on YAF, it hears 71\% of OAF's angry
+clips as fear and three quarters of OAF's happy and surprised clips as disgust. Most of a new-speaker emotion
+usually lands on one wrong category, with high confidence (median 0.85 for YAF happy $\to$ angry). YAF's angry
+clips are the exception: they split between neutral (45\%) and sad (35\%), two low-energy emotions. In both cases
+the new speaker's emotions are not lost, only misnamed (Section~\ref{sec:fewshot}).
 
 \subsection{When does fusion help most?}
 \label{sec:fusion}
@@ -230,13 +241,14 @@ learnt on their own to ignore the text, which is the correct response to Section
 \paragraph{When fusion would help.} Fusion helps when the two modalities carry \emph{complementary} information:
 when the words themselves express emotion (``I'm furious'', ``what a lovely day''), when the voice is ambiguous,
 or when one channel is degraded and the other is not. Datasets of natural conversation such as IEMOCAP or MELD have
-this property and fusion gains there are well documented. TESS controls the text on purpose to isolate the voice,
+this property: their speakers choose their own words. TESS controls the text on purpose to isolate the voice,
 so it is the one setting where a text branch must contribute nothing.
 
 \paragraph{Noise: a gain that is not fusion.} I added white noise to the test speech at 20, 10 and 0\,dB SNR
 (unseen words). Speech alone falls to 50.3\% at 0\,dB, the GMU to 44.9\%, but the cross-modal attention model keeps
-70.6\% ($\pm$ 11.9). Its text is shuffle-proof, so the gain cannot come from the words: the attention layer acts
-as a second, sharper pooling over the speech frames (Section~\ref{sec:neg}), which copes better with noise.
+70.6\% ($\pm$ 11.9). Shuffling its text changes nothing, so the gain cannot come from the words. The attention
+layer acts as a second, sharper pooling over the speech frames (Section~\ref{sec:neg}), and that pooling copes
+better with noise.
 
 \begin{figure}[H]\centering
 \includegraphics[width=0.62\linewidth]{noise_robustness.png}
@@ -257,8 +269,9 @@ Clip & Model & Split & True & Predicted & What it shows \\
 predictions, and fairly confident; I found no pattern behind it \\
 \code{OAF\_mode\_neutral} & speech, GMU & words & neutral & sad (0.61, 0.52) & the only clip both models get wrong,
 with low confidence: it sits between the two low-arousal emotions \\
-\code{YAF\_knock\_neutral} & GMU & words & neutral & sad (0.98) & the speech model gets it right; the fusion model,
-with its idle text branch, is confidently wrong: the cost of a modality without information \\
+\code{YAF\_knock\_neutral} & GMU & words & neutral & sad (0.98) & the speech model gets it right, the separately
+trained fusion model is confidently wrong; shuffling the text changes no fusion accuracy, so the text itself is not
+the cause \\
 \code{YAF\_puff\_happy} & speech & O$\to$Y & happy & angry (0.98) & one of 394 such errors: YAF's happy clips land
 where OAF's angry clips were in training \\
 \code{OAF\_soup\_angry} & speech & Y$\to$O & angry & fear (0.96) & one of 428 such errors: OAF's angry clips land
@@ -267,8 +280,8 @@ where YAF's fearful clips were \\
 \end{tabularx}
 \end{table}
 
-The first three are isolated: borderline clips between neighbouring emotions, and one error that the fusion model
-adds. The last two are not mistakes about single clips but about a whole emotion of a new speaker, made with
+The first three are isolated: one borderline clip, one error without a visible cause, and one that only the fusion
+model makes. The last two are not mistakes about single clips but about a whole emotion of a new speaker, made with
 high confidence, which a confidence threshold could not catch.
 
 \subsection{Separability of the learned representations}
@@ -315,7 +328,7 @@ seed).
 \label{tab:fewshot}
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
- & Model as trained & Cluster purity (no labels) & $k = 1$ & $k = 2$ & $k = 5$ \\
+ & Model as trained & Cluster purity (oracle naming) & $k = 1$ & $k = 2$ & $k = 5$ \\
 \midrule
 OAF $\to$ YAF & 65.4 $\pm$ 7.3 & 96.2 $\pm$ 0.9 & 92.3 $\pm$ 1.6 & 95.4 $\pm$ 2.2 & 97.9 $\pm$ 0.8 \\
 YAF $\to$ OAF & 60.2 $\pm$ 1.9 & 87.4 $\pm$ 1.5 & 78.9 $\pm$ 2.3 & 86.5 $\pm$ 1.5 & 91.5 $\pm$ 1.7 \\
@@ -326,33 +339,32 @@ YAF $\to$ OAF & 60.2 $\pm$ 1.9 & 87.4 $\pm$ 1.5 & 78.9 $\pm$ 2.3 & 86.5 $\pm$ 1.
 \begin{figure}[H]\centering
 \includegraphics[width=0.9\linewidth]{few_shot_adaptation.png}
 \caption{Accuracy on the unseen speaker against the number of labelled clips per emotion; dotted lines show the
-cluster purity reached without labels.}
+cluster purity (k-means without labels, clusters named with the true labels).}
 \label{fig:fewshot}
 \end{figure}
 
-The representation already separates the new speaker's emotions: 96\% of YAF's clips fall into the right cluster
-without a single label. \textbf{Seven labelled clips, one per emotion, raise accuracy from 65\% to 92\%} for YAF and
-from 60\% to 79\% for OAF; five per emotion reach 98\% and 92\%. A deployed system would therefore not need to
-retrain on a new voice, only to recalibrate its last layer with a few examples.
+The representation already separates the new speaker's emotions: k-means, which uses no labels, groups them so
+that the best naming of the clusters puts 96\% of YAF's clips in their own emotion. That naming uses the true
+labels, so 96\% is a ceiling for any relabelling, not a result without labels. \textbf{Seven labelled clips, one per
+emotion, raise accuracy from 65\% to 92\%} for YAF and from 60\% to 79\% for OAF; five per emotion reach 98\% and
+92\%. On TESS, refitting only the last layer on seven clips therefore recovers most of the gap; whether that holds
+for natural speech, two speakers cannot show. YAF $\to$ OAF stays harder in every column: OAF's angry, happy and
+surprised clips overlap more in the representation, and her clusters are less pure (87\%).
 
 \paragraph{Zero labels are not enough.} I also tried naming the new speaker's clusters without any labels: k-means
 clusters, each given the emotion with the highest mean log-probability under the model, one emotion per cluster
 (TESS is balanced). It did not help reliably: 64.6\% ($\pm$ 9.2) for YAF and 68.8\% ($\pm$ 16.2) for OAF, with
 single seeds ranging from 48\% to 88\%. The model is confidently wrong about whole clusters, so its own
-probabilities cannot name them; a handful of true labels can. Averaging the three seeds' predictions (an ensemble)
-reaches 100\% on unseen words but changes little across speakers (68.0\% and 59.5\%;
-\code{Results/seed\_ensemble.csv}). YAF $\to$ OAF stays harder in every
-column: OAF's angry, happy and surprised clips overlap more in the representation, and her clusters are less
-pure (87\%).
+probabilities cannot name them; a handful of true labels can.
 
 \subsection{Speaker augmentation}
 \label{sec:aug}
-The model fails on a new voice because it heard only one during training. Speaker augmentation gives it more:
-every training clip of the training speaker also enters training in four altered versions, pitch-shifted by
-$\pm$3 semitones and played 0.9 and 1.1 times as fast (resampling, which scales pitch, formants and tempo together,
-roughly like a different vocal tract). Validation and test clips stay unaltered. To fit five versions of every clip
-in memory, these runs use the mean of WavLM's 13 layers instead of the learned mix (justified by the near-uniform
-layer weights), and the same run trains the unaugmented controls on identical features
+The model fails on a new voice because it heard only one during training. Speaker augmentation gives it more.
+Every training clip also enters training in four altered versions: pitch-shifted by $\pm$3 semitones, and played
+0.9 and 1.1 times as fast. The speed change resamples the audio, which scales pitch, formants (the resonances that shape vowels) and tempo together,
+roughly like a different vocal tract. Validation and test clips stay unaltered. To fit five versions of every clip
+in memory, these runs use the mean of WavLM's 13 layers instead of the learned mix, which the near-uniform layer
+weights justify. The same run trains the unaugmented controls on identical features
 (\code{kaggle/TESS\_augmentation.ipynb}, \code{Results\_aug/}). The log-mel control reproduced the first run
 exactly (32.2\% and 35.9\%).
 
@@ -375,15 +387,16 @@ Log-mel & 32.2 $\pm$ 4.3 & 28.0 & 54.6 & 35.9 $\pm$ 1.4 & 26.3 & 47.8 \\
 \end{table}
 
 \paragraph{Augmentation helps the features that need it.} Log-mel gains 20 points from OAF to YAF and 5 from YAF to
-OAF, and the purity of its new-speaker clusters rises from 55\% to 72\%: the altered voices teach it some speaker
+OAF. The purity of its new-speaker clusters rises from 55\% to 72\%: the altered voices teach it some speaker
 invariance it had no other way to learn. WavLM, pretrained on thousands of speakers, already had most of it. Its
 accuracy moves by +0.7 and +3.3 points, macro-F1 rises by 8 points from YAF to OAF, and the cluster purity stays
 where it was (92 $\to$ 89\%, 81 $\to$ 84\%). The clearest effect on WavLM is stability: the seed spread from OAF to
 YAF falls from $\pm$12.1 to $\pm$2.8 points.
 
-\paragraph{It moves the errors rather than removing them.} From YAF to OAF the hard emotions improve (angry 17
-$\to$ 57\%, surprise 6 $\to$ 34\%, happy 5 $\to$ 22\%) while neutral and sad fall (92 $\to$ 59\%, 93 $\to$ 61\%);
-from OAF to YAF sad improves (80 $\to$ 100\%) and angry collapses (35 $\to$ 3\%). Pitch and speed shifts make the
+\paragraph{It moves the errors rather than removing them.} Comparing the layer-mean control with its augmented version
+(per-emotion recall in \code{Results\_aug/}), from YAF to OAF the hard emotions improve (angry 17
+$\to$ 57\%, surprise 6 $\to$ 34\%, happy 5 $\to$ 22\%), while neutral and sad fall (92 $\to$ 59\%, 93 $\to$ 61\%).
+From OAF to YAF, sad improves (80 $\to$ 100\%) and angry collapses (35 $\to$ 3\%). Pitch and speed shifts make the
 training voice more varied, but not in the specific way the other actress differs, so the decision boundaries
 shift instead of opening up. A different real speaker in training, or the handful of labelled clips of
 Section~\ref{sec:fewshot}, remain the more effective remedies.
@@ -393,7 +406,7 @@ Section~\ref{sec:fewshot}, remain the more effective remedies.
 \paragraph{Per-speaker normalisation lowered cross-speaker accuracy.} I standardised each speaker's WavLM features
 with that speaker's own mean and SD (no labels needed), expecting to remove voice differences. Accuracy dropped by
 9 points in both directions (65.4 $\to$ 56.4 and 60.2 $\to$ 51.3), while it stayed at 99.9\% for known voices, and
-cluster purity fell too (Table~\ref{tab:fewshot} for comparison: 93.3\% and 74.8\%). The likely reason: the
+cluster purity fell too, from 96.2\% and 87.4\% (Table~\ref{tab:fewshot}) to 93.3\% and 74.8\%. The likely reason: the
 statistics mix all seven emotions, and the actresses do not distribute their effort equally across them, so the
 normalisation shifts emotion cues as well as voice cues; standardising all 768 dimensions also inflates
 low-variance, noisy dimensions. Normalising only some layers, or only the mean, would be the next thing to try.
@@ -401,9 +414,9 @@ low-variance, noisy dimensions. Normalising only some layers, or only the mean, 
 \paragraph{Cross-modal attention did not learn an alignment.} I hoped each text token would attend to its own part
 of the audio, for example the target word near the end. Instead every token attends to the same frames: the
 attention-weighted position is identical across tokens (0.447 of the clip for every token on unseen words). The
-attention is sharp in time, a few vowel nuclei per clip (Figure~\ref{fig:attn}), so the layer became a learned
-temporal pooling. With text that carries no information, the queries have nothing to distinguish them, so a single
-shared pattern is the expected outcome; the noise robustness in Figure~\ref{fig:noise} is a side effect of this
+attention is sharp in time, a few short stretches per clip, mostly in vowels (Figure~\ref{fig:attn}), so the layer became a learned
+temporal pooling. Text that says nothing about the emotion gives the queries nothing to tell them apart, so one
+shared pattern is the expected outcome. The noise robustness in Figure~\ref{fig:noise} is a side effect of that
 pooling.
 
 \begin{figure}[H]\centering
@@ -419,12 +432,12 @@ columns 20\,ms speech frames. All tokens attend to the same few frames.}
 ``new speaker'' test has only two directions, and the seed spread is large ($\pm$ 7--12 points).
 \item \textbf{Model selection cannot see the new speaker.} In the cross-speaker splits the validation set comes
 from the training speaker and reaches 100\% in every run, so it cannot tell epochs apart, and the chosen epoch is
-arbitrary for the other voice. This explains much of the seed spread; a validation set from a third speaker would
-fix it, but TESS has only two.
-\item \textbf{Acted speech.} TESS emotions are posed and exaggerated, which is why known voices score 99.8\%;
-natural speech is far harder.
-\item \textbf{Frozen encoders.} Fine-tuning WavLM might improve cross-speaker accuracy but would also overfit 2,000
-clips; I kept the encoders frozen to keep the comparison between pipelines fair.
+arbitrary for the other voice. That arbitrary choice probably explains much of the seed spread. A validation set
+from a third speaker would fix it, but TESS has only two.
+\item \textbf{Acted speech.} TESS emotions are posed and exaggerated, and both speakers appear in training on the
+unseen-word split; both help known voices reach 99.8\%. Natural speech from new speakers is far harder.
+\item \textbf{Frozen encoders.} Fine-tuning WavLM might improve cross-speaker accuracy, or it might overfit the 1,200
+clips of one speaker; I did not test it. I kept the encoders frozen so that the pipelines compare fairly.
 \end{itemize}
 
 \section{Reproducibility}

@@ -19,7 +19,8 @@ dictionaries extended by G2P pronunciations for out-of-vocabulary words, and a t
 - The two acoustic models agree on 90 % of word boundaries within 20 ms; `english_mfa` stretches word-final stops
   over the trailing silence in two clips.
 - **The aligner as a pronunciation checker:** given both vowels of each minimal pair, the aligner hears the
-  learner's "bad" as "bed" (the only one of six words whose partner vowel fits better), matching the formants.
+  learner's "bad" as "bed" (the only one of six words whose partner vowel fits better); its formants lie between
+  the two vowels.
 - TextGrids: `assignment2a_forced_alignment/outputs/textgrids/`.
 
 ## 2b: Multimodal emotion recognition on TESS
@@ -38,5 +39,5 @@ on an unseen speaker, 3 seeds each.
   models learn to ignore the text (shuffling it changes nothing, shuffling the speech drops them to chance).
 - The cross-speaker errors are mislabelled clusters: one labelled clip per emotion of the new speaker lifts accuracy
   from 65 % to 92 %.
-- Speaker augmentation (pitch and speed changes) adds 20 points to log-mel features but little to WavLM.
+- Speaker augmentation (pitch and speed changes) adds 20 and 5 points to log-mel features but little to WavLM.
 - Training ran on a Kaggle T4 GPU with the notebooks in `assignment2b_emotion_recognition/kaggle/`.
