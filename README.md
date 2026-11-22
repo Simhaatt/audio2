@@ -5,6 +5,8 @@
 | **2a** Forced alignment with the Montreal Forced Aligner | [`assignment2a_forced_alignment/`](assignment2a_forced_alignment) | [report.pdf](assignment2a_forced_alignment/report/report.pdf) |
 | **2b** Multimodal emotion recognition on TESS (speech, text, fusion) | [`assignment2b_emotion_recognition/`](assignment2b_emotion_recognition) | [report.pdf](assignment2b_emotion_recognition/report/report.pdf) |
 
+Both reports in one file: [Assignment2_report.pdf](Assignment2_report.pdf) (cover, then 2a, then 2b).
+
 Each folder is self-contained, with its own README (setup and exact commands), `requirements.txt`, code, outputs and
 report.
 
